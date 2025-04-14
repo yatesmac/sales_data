@@ -1,0 +1,6 @@
+apache-airflow==2.7.1
+pyspark==3.5.0
+pandas==2.1.4
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+py4j==0.10.9.7
