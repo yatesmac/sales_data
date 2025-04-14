@@ -4,4 +4,4 @@ config-version: 2
 
 profile: 'sales_data_profile'
 
-source-paths: ["models"]
+model-paths: ["models"]

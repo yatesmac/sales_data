@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_sales
+  - name: src_sales
     description: "Stage view of raw sales data"
     columns:
       - name: SalesID
@@ -16,7 +16,7 @@ models:
       - name: ProductID
         tests:
           - not_null
-  - name: stg_products
+  - name: src_products
     description: "Stage view of raw products data"
     columns:
       - name: ProductID

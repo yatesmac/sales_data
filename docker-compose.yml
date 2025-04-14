@@ -30,7 +30,6 @@ services:
       - "8080:80"
     volumes:
       - ./data/postgres/vol-pgadmin_data:/var/lib/pgadmin  
-    networks:
        - pg-network
     depends_on:
       postgres:

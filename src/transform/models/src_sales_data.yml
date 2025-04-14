@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: sales_data
-    schema: sales_data
+    schema: public
     database: sales_data
     tables:
       - name: sales

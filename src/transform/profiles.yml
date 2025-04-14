@@ -8,4 +8,4 @@ sales_data_profile:
       password: postgres
       port: 5432
       dbname: sales_data
-      schema: sales_data
+      schema: public
