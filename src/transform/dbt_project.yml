@@ -1,0 +1,7 @@
+name: 'sales_data_dbt'
+version: '1.0'
+config-version: 2
+
+profile: 'sales_data_profile'
+
+source-paths: ["models"]

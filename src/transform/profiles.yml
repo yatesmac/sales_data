@@ -1,0 +1,11 @@
+sales_data_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 5432
+      dbname: sales_data
+      schema: sales_data

@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: sales_total_price
+    description: "This model transforms the raw sales data by computing the TotalPrice using the unit price from the products table, quantity, and discount."
+    columns:
+      - name: SalesID
+        description: "Unique identifier for each sale."
+        tests:
+          - unique
+          - not_null
+      - name: TotalPrice
+        description: "Calculated as: Unit Price x Quantity x Discount, rounded to two decimal places."
