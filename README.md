@@ -4,7 +4,7 @@ This project implements an ELT (Extract, Load, Transform) pipeline for sales dat
 
 ## Project Structure
 
-```
+```bash
 .
 ├── dags/                    :   Airflow DAG definitions
 │   └── sales_data_elt.py    :   Main ELT workflow DAG
@@ -32,6 +32,20 @@ This project implements an ELT (Extract, Load, Transform) pipeline for sales dat
 ├── requirements.txt         :  Python dependencies
 └── README.md                :   Project documentation
 ```
+
+## Tools and Services
+
+|Component |Tool |
+|----------|-----|
+|Source |CSV |
+|Storage |Parquet |
+|Destination |PostgreSQL |
+|Executor |Apache Spark |
+|Transformation |dbt |
+|Data quality checks |dbt tests |
+|Scheduler |Airflow |
+|Orchestrator |Airflow |
+|Visualization|Metabase |
 
 ## Dataset Information
 
