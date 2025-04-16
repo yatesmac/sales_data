@@ -10,4 +10,4 @@ models:
           - unique
           - not_null
       - name: TotalPrice
-        description: "Calculated as: Unit Price x Quantity x Discount, rounded to two decimal places."
+        description: "Calculated as: Unit Price x Quantity x (1 - Discount), rounded to two decimal places."

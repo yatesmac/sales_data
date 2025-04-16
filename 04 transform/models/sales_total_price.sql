@@ -8,7 +8,7 @@ SELECT
     s."Quantity",
     s."Discount",
     -- Calculate new total price:
-    (p."Price" * s."Quantity" * s."Discount") AS TotalPrice,
+    (p."Price" * s."Quantity" * (1 - s."Discount")) AS TotalPrice,
     s."SalesDate",
     s."TransactionNumber"
 FROM {{ ref('src_sales') }} AS s
