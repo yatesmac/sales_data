@@ -1,39 +1,11 @@
 import os
-from pyspark.sql import SparkSession
-
-
-# List of tables to process
-TABLES = [
-    "categories",
-    "cities",
-    "countries",
-    "customers",
-    "employees",
-    "products",
-    "sales"
-]
-
-
-def create_spark_session():
-    """Create and return a Spark session."""
-    return SparkSession.builder \
-        .config("spark.driver.memory", "12g") \
-        .appName("CSVtoParquet") \
-        .getOrCreate()
+from src.resources import create_spark_session, create_dataframe, TABLES
 
 
 def create_directory(directory):
     """Create directory if it doesn't exist."""
     if not os.path.exists(directory):
         os.makedirs(directory)
-
-
-def create_dataframe(spark, file_name):
-    """Create a Spark DataFrame from a CSV file."""
-    return spark.read \
-        .option("header", "true") \
-        .option("inferSchema", True) \
-        .csv(file_name)
 
 
 def main():
