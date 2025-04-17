@@ -1,41 +1,35 @@
 import os
+import sys
+from pathlib import Path
 from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 
+# sys.path lists directories that Python searches for modules to import
+sys.path.append('../src')
 import extract
 import load
+from create_data_dir import create_data_directories
+
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'yates',
     'depends_on_past': False,
-    'start_date': datetime(2024, 1, 1),
+    'start_date': datetime(2025, 4, 17),
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
+    'retries': 2,
     'retry_delay': timedelta(minutes=5),
 }
 
-def create_data_directories():
-    """Create necessary data directories if they don't exist."""
-    directories = [
-        'data/raw',
-        'data/datalake',
-        'data/postgres',
-        'data/postgres/vol-pgadmin_data',
-        'data/postgres/vol-pgdata',
-    ]
-    
-    for directory in directories:
-        os.makedirs(directory, exist_ok=True)
-        print(f"Created directory: {directory}")
 
 def run_extract_load():
     """Run the extract and load process."""
     extract.main()
     load.main()
+
 
 with DAG(
     'pipeline',
@@ -50,9 +44,14 @@ with DAG(
         python_callable=create_data_directories,
     )
 
+    DOCKER_DIR = Path(__file__).resolve().parent.parent
     create_database = BashOperator(
         task_id='create_database',
-        bash_command='docker-compose up || true',
+        bash_command=(
+            "cd {{ params.docker_dir }} && "
+            "docker-compose up"
+        ),
+        params={"dbt_dir": str(DOCKER_DIR)}
     )
 
     run_elt = PythonOperator(
@@ -60,9 +59,14 @@ with DAG(
         python_callable=run_extract_load,
     )
 
+    DBT_DIR = Path(__file__).resolve().parent.parent / "dbt"
     run_dbt_model = BashOperator(
-    task_id='run_dbt_model',
-    bash_command='dbt run --models 04\ transform/'
+        task_id='run_dbt_model',
+        bash_command=(
+            "cd {{ params.dbt_dir }} && "
+            "dbt run --profiles-dir {{ params.dbt_dir }}/profiles --project-dir {{ params.dbt_dir }}"
+            ),
+        params={"dbt_dir": str(DBT_DIR)}
     )
 
     # Set task dependencies

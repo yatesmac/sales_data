@@ -1,7 +1,7 @@
 import itertools
 import pandas as pd
 from sqlalchemy import create_engine
-from src.resources import create_spark_session, create_dataframe, TABLES
+from resources import create_spark_session, create_dataframe, TABLES
 
 
 # Database configuration

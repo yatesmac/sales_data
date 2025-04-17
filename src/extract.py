@@ -1,5 +1,5 @@
 import os
-from src.resources import create_spark_session, create_dataframe, TABLES
+from resources import create_spark_session, create_dataframe, TABLES
 
 
 def create_directory(directory):
@@ -17,11 +17,11 @@ def main():
         print(f"Processing {table} data...")
         
         # Extract: Read CSV and create DataFrame
-        csv_path = f"data/raw/{table}.csv"
+        csv_path = f"../data/raw/{table}.csv"
         df = create_dataframe(spark, csv_path)
         
         # Transform: Save to parquet
-        parquet_dir = f"data/datalake/{table}"
+        parquet_dir = f"../data/datalake/{table}"
         create_directory(parquet_dir)
         df.write.mode("overwrite").parquet(f"{parquet_dir}/{table}.parquet")
 
