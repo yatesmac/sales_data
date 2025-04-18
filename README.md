@@ -173,7 +173,7 @@ If you prefer to run the pipeline without Airflow, you can use the standalone Py
 
 ## 📁 Project Structure
 
-```mermaid
+```bash
 ├── README.md
 ├── dags
 │   └── pipeline.py
