@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 
-# List of tables to process
+# Tables to process in the ETL pipeline
 TABLES = [
     "categories",
     "cities",
@@ -13,7 +13,7 @@ TABLES = [
 
 
 def create_spark_session():
-    """Create and return a Spark session."""
+    """Create and configure a Spark session."""
     return SparkSession.builder \
         .config("spark.driver.memory", "12g") \
         .appName("CSVtoParquetToPostgres") \
@@ -21,7 +21,7 @@ def create_spark_session():
 
 
 def create_dataframe(spark, file_name):
-    """Create a Spark DataFrame from a CSV file."""
+    """Create a Spark DataFrame from a CSV or Parquet file."""
     try:
         if file_name.endswith(".csv"):
             return spark.read \

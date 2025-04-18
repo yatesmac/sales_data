@@ -9,6 +9,7 @@ def create_directory(directory):
 
 
 def main():
+    """Extract data from CSV files and save as parquet format."""
     # Initialize Spark session
     spark = create_spark_session()
     
@@ -16,16 +17,16 @@ def main():
     for table in TABLES:
         print(f"Processing {table} data...")
         
-        # Extract: Read CSV and create DataFrame
+        # Read CSV and create DataFrame
         csv_path = f"../data/raw/{table}.csv"
         df = create_dataframe(spark, csv_path)
         
-        # Transform: Save to parquet
+        # Save to parquet format
         parquet_dir = f"../data/datalake/{table}"
         create_directory(parquet_dir)
         df.write.mode("overwrite").parquet(f"{parquet_dir}/{table}.parquet")
 
-    # Close spark session
+    # Clean up
     spark.stop()
     
 

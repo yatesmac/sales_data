@@ -1,269 +1,238 @@
-# Sales Data ELT Pipeline
+# 🚀 Sales Data ELT Pipeline
 
-This project implements an ELT (Extract, Load, Transform) pipeline for sales data using Apache Airflow, PySpark, and PostgreSQL. The pipeline processes sales data from various sources, performs data quality checks, and loads it into a PostgreSQL database for analysis.
+A modern data pipeline for processing and analyzing sales data, built with Apache Airflow, PySpark, and PostgreSQL.
 
-## Project Structure
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![Apache Airflow](https://img.shields.io/badge/Airflow-2.7%2B-orange)](https://airflow.apache.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13%2B-blue)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-```bash
-.
-├── dags/                    :   Airflow DAG definitions
-│   └── sales_data_elt.py    :   Main ELT workflow DAG
-├── data/                    :   Data directory
-│   ├── raw/                 :  Raw CSV files
-│   └── datalake/            :  Processed parquet files
-│       ├── categories/      :  Category data in parquet format
-│       ├── cities/          :  City data in parquet format
-│       ├── countries/       :  Country data in parquet format
-│       ├── customers/       :  Customer data in parquet format
-│       ├── employees/       :  Employee data in parquet format
-│       ├── products/        :  Product data in parquet format
-│       └── sales/           :  Sales data in parquet format
-├── extract/                 :  Extraction related files
-│   └── extract.ipynb        :   Jupyter notebook for data extraction
-├── load/                    :  Loading related files
-│   ├── load.ipynb           :   Jupyter notebook for data loading
-│   └── schema.sql           :   Database schema definition
-├── transform/               :  Transformation related files
-│   └── models/              :   Data transformation models
-│       └── src_sales.sql    :   Sales data transformation
-├── explore/                 :   Data exploration files
-│   └── explore.ipynb        :  Jupyter notebook for data analysis
-├── extract_load.py          :  Main ELT script
-├── requirements.txt         :  Python dependencies
-└── README.md                :   Project documentation
-```
+## 📋 Table of Contents
 
-## Tools and Services
+- [Overview](#-overview)
+- [Technology Stack](#-technology-stack)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [Data Flow](#-data-flow)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-|Component |Tool |
-|----------|-----|
-|Source |CSV |
-|Storage |Parquet |
-|Destination |PostgreSQL |
-|Executor |Apache Spark |
-|Transformation |dbt |
-|Data quality checks |dbt tests |
-|Scheduler |Airflow |
-|Orchestrator |Airflow |
-|Visualization|Metabase |
+## 🌟 Overview
 
-## Dataset Information
+### Challenges and Solutions
 
-The dataset consists of seven interconnected tables that form a complete sales database:
+Modern businesses face significant challenges in managing and analyzing their sales data. This project provides comprehensive solutions through a robust ELT pipeline:
 
-1. **categories.csv**
-   - CategoryID (INT, PRIMARY KEY)
-   - CategoryName (VARCHAR)
+1. **Data Processing and Integration**
+   - **Challenge**: Sales data comes from multiple sources in various formats, making consolidation and analysis difficult
+   - **Solution**: 
+     - Automated data extraction from multiple sources
+     - Efficient data transformation using PySpark
+     - Parquet-based storage for optimal performance
+     - Automated data quality validation
 
-2. **cities.csv**
-   - CityID (INT, PRIMARY KEY)
-   - CityName (VARCHAR)
-   - Zipcode (NUMERIC)
-   - CountryID (INT, FOREIGN KEY)
+2. **Data Quality and Consistency**
+   - **Challenge**: Ensuring data accuracy and consistency across different systems
+   - **Solution**:
+     - Schema validation during extraction
+     - Data integrity checks during loading
+     - Business rule validation in dbt transformations
+     - Automated testing of transformed data
 
-3. **countries.csv**
-   - CountryID (INT, PRIMARY KEY)
-   - CountryName (VARCHAR)
-   - CountryCode (VARCHAR)
+3. **Scalability and Performance**
+   - **Challenge**: Processing large datasets efficiently as data volumes grow
+   - **Solution**:
+     - Distributed processing with PySpark
+     - Smart loading strategies for large datasets
+     - Optimized storage with Parquet format
+     - Efficient query performance
 
-4. **customers.csv**
-   - CustomerID (INT, PRIMARY KEY)
-   - FirstName (VARCHAR)
-   - MiddleInitial (VARCHAR)
-   - LastName (VARCHAR)
-   - CityID (INT, FOREIGN KEY)
-   - Address (VARCHAR)
+4. **Analysis and Insights**
+   - **Challenge**: Providing timely access to sales data for decision-making
+   - **Solution**:
+     - Interactive data exploration with Jupyter notebooks
+     - SQL-based transformations with dbt
+     - Visualization capabilities with Metabase
+     - Custom reporting and dashboards
 
-5. **employees.csv**
-   - EmployeeID (INT, PRIMARY KEY)
-   - FirstName (VARCHAR)
-   - MiddleInitial (VARCHAR)
-   - LastName (VARCHAR)
-   - BirthDate (DATE)
-   - Gender (VARCHAR)
-   - CityID (INT, FOREIGN KEY)
-   - HireDate (DATE)
+5. **Operational Management**
+   - **Challenge**: Managing complex data pipeline dependencies and monitoring
+   - **Solution**:
+     - DAG-based workflow orchestration with Airflow
+     - Automated scheduling and monitoring
+     - Error handling and retry mechanisms
+     - Dependency management
 
-6. **products.csv**
-   - ProductID (INT, PRIMARY KEY)
-   - ProductName (VARCHAR)
-   - Price (DECIMAL)
-   - CategoryID (INT, FOREIGN KEY)
-   - Class (VARCHAR)
-   - ModifyDate (DATE)
-   - Resistant (VARCHAR)
-   - IsAllergic (VARCHAR)
-   - VitalityDays (NUMERIC)
+## 🛠 Technology Stack
 
-7. **sales.csv**
-   - SalesID (INT, PRIMARY KEY)
-   - SalesPersonID (INT, FOREIGN KEY)
-   - CustomerID (INT, FOREIGN KEY)
-   - ProductID (INT, FOREIGN KEY)
-   - Quantity (INT)
-   - Discount (NUMERIC)
-   - TotalPrice (DECIMAL)
-   - SalesDate (DATETIME)
-   - TransactionNumber (VARCHAR)
+|Component |Tool |Description |
+|----------|-----|------------|
+|Source |CSV |Raw data files in CSV format|
+|Storage |Parquet |Optimized columnar storage format|
+|Destination |PostgreSQL |Production database for transformed data|
+|Processing |Apache Spark |Distributed data processing|
+|Transformation |dbt |SQL-based data transformations|
+|Quality Checks |dbt tests |Automated data quality validation|
+|Orchestration |Airflow |Workflow scheduling and monitoring|
+|Analysis |Jupyter |Interactive data exploration|
+|Visualization |Metabase |Business intelligence and dashboards|
 
-## Data Quality Checks
+## 🚀 Getting Started
 
-The pipeline includes several data quality checks:
+### Prerequisites
 
-1. **Schema Validation**
-   - Verifies data types match expected schema
-   - Checks for required fields
-   - Validates foreign key relationships
-
-2. **Data Completeness**
-   - Checks for missing values
-   - Validates required fields are populated
-   - Ensures referential integrity
-
-3. **Data Consistency**
-   - Validates date formats
-   - Checks numeric ranges
-   - Ensures categorical values match expected domains
-
-4. **Business Rules**
-   - Validates discount calculations
-   - Ensures price consistency
-   - Checks transaction uniqueness
-
-## Prerequisites
-
-- Python 3.8+
-- Docker and Docker Compose
-- Java 8+ (required for PySpark)
-- Apache Airflow 2.7+
-- 8GB+ RAM (recommended for processing large datasets)
+- Python 3.8 or higher
+- Docker and Docker Compose (optional)
+- Java 8 or higher (for PySpark)
+- 8GB+ RAM
 - 20GB+ disk space
 
-## Setup
+### Option 1: Setup with Airflow (Full Pipeline)
 
-1. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/sales-data-elt.git
+   cd sales-data-elt
+   ```
+
+2. **Set up the environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+3. **Start the services**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Initialize Airflow**
+   ```bash
+   airflow db init
+   airflow users create \
+       --username admin \
+       --firstname Admin \
+       --lastname User \
+       --role Admin \
+       --email admin@example.com \
+       --password admin
+   ```
+
+5. **Start Airflow services**
+   ```bash
+   airflow webserver -p 8080
+   airflow scheduler
+   ```
+
+### Option 2: Setup without Airflow (Standalone)
+
+If you prefer to run the pipeline without Airflow, you can use the standalone Python scripts:
+
+1. **Clone and setup environment**
+   ```bash
+   git clone https://github.com/yourusername/sales-data-elt.git
+   cd sales-data-elt
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. **Start PostgreSQL (if needed)**
+   ```bash
+   docker-compose up -d postgres
+   ```
+
+3. **Run the pipeline manually**
+   ```bash
+   # Create necessary directories
+   python src/create_data_dir.py
+
+   # Run extraction
+   python src/extract.py
+
+   # Run loading
+   python src/load.py
+   ```
+
+4. **Run transformations (optional)**
+   ```bash
+   # Using dbt
+   cd dbt
+   dbt run
+   ```
+
+## 📁 Project Structure
+
+```
+sales-data-elt/
+├── src/                     # Source code
+│   ├── extract.py          # Data extraction module
+│   ├── load.py            # Data loading module
+│   ├── resources.py       # Resource configuration
+│   ├── create_data_dir.py # Directory setup
+│   └── schema.sql         # Database schema
+├── dags/                   # Airflow DAG definitions
+├── dbt/                    # dbt transformations
+├── notebooks/              # Jupyter notebooks
+│   └── exploration.ipynb  # Data exploration
+├── docker-compose.yml      # Docker services config
+└── requirements.txt        # Python dependencies
 ```
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 🔄 Data Flow
 
-3. Initialize Airflow:
-```bash
-airflow db init
-airflow users create \
-    --username admin \
-    --firstname Admin \
-    --lastname User \
-    --role Admin \
-    --email admin@example.com \
-    --password admin
-```
+### 1. Data Extraction (`src/extract.py`)
+- Reads raw CSV files from `data/raw/` directory
+- Uses PySpark for efficient data processing
+- Converts and saves data in Parquet format
+- Stores processed files in `data/datalake/{table_name}/`
 
-4. Start Airflow:
-```bash
-airflow webserver -p 8080
-airflow scheduler
-```
+### 2. Data Loading (`src/load.py`)
+- Reads Parquet files from the datalake
+- Implements smart loading strategy:
+  - Direct loading for small datasets
+  - Chunked loading for large datasets (>100,000 rows)
+- Loads data into PostgreSQL tables
+- Handles error logging and data validation
 
-5. Start the services using Docker Compose:
-```bash
-docker-compose up -d
-```
+### 3. Data Transformation (dbt)
+- Applies business logic using dbt models
+- Performs data quality checks
+- Creates transformed views and tables
+- Maintains data lineage
 
-6. Configure Airflow connections:
-- Open Airflow UI (http://localhost:8080)
-- Go to Admin > Connections
-- Add a new PostgreSQL connection:
-  - Connection Id: postgres_default
-  - Connection Type: Postgres
-  - Host: postgres (Docker service name)
-  - Schema: sales_data
-  - Login: postgres
-  - Password: postgres
-  - Port: 5432
+### 4. Data Analysis (Jupyter)
+- Interactive data exploration in `notebooks/exploration.ipynb`
+- Generates insights and visualizations
+- Supports ad-hoc analysis
+- Connects to both raw and transformed data
 
-## Usage
+### Data Quality Checks
+Throughout the pipeline, several data quality checks are performed:
+- Schema validation during extraction
+- Data integrity checks during loading
+- Business rule validation in dbt transformations
+- Automated testing of transformed data
 
-1. Place your CSV files in the `data/raw` directory with the following names:
-   - categories.csv
-   - cities.csv
-   - countries.csv
-   - customers.csv
-   - employees.csv
-   - products.csv
-   - sales.csv
+## 🤝 Contributing
 
-2. The DAG will run automatically on a daily schedule, or you can trigger it manually from the Airflow UI.
-
-## DAG Tasks
-
-1. `create_directories`: Creates necessary data directories
-2. `create_database`: Creates the PostgreSQL database in the Docker container
-3. `create_schema`: Creates database tables using the schema.sql file mounted in the container
-4. `run_extract_load`: Runs the main ELT process
-
-## Monitoring
-
-- Access the Airflow UI at http://localhost:8080
-- Monitor DAG runs, task status, and logs
-- View the PostgreSQL database to verify data loading
-- Check Docker container logs: `docker logs postgres`
-
-## Performance Considerations
-
-1. **Memory Management**
-   - Large datasets are processed in chunks
-   - PySpark configuration optimized for available memory
-   - Batch processing for database operations
-   - Docker container resource limits can be adjusted in docker-compose.yml
-
-2. **Error Handling**
-   - Automatic retries for failed tasks
-   - Detailed error logging
-   - Transaction rollback on failure
-   - Docker container health checks
-
-3. **Scalability**
-   - Parallel processing of independent tables
-   - Configurable batch sizes
-   - Efficient data partitioning
-   - Docker container scaling options
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. **Memory Errors**
-   - Increase Spark driver memory
-   - Reduce batch size
-   - Check available system resources
-   - Adjust Docker container memory limits
-
-2. **Database Connection Issues**
-   - Verify PostgreSQL container is running: `docker ps`
-   - Check container logs: `docker logs postgres`
-   - Verify network connectivity between Airflow and PostgreSQL
-   - Ensure proper Docker networking configuration
-
-3. **Data Quality Issues**
-   - Review error logs
-   - Check data validation rules
-   - Verify source data format
-   - Check container volume mounts
-
-## Contributing
+We welcome contributions! Please follow these steps:
 
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Apache Airflow for workflow orchestration
+- PySpark for data processing
+- PostgreSQL for data storage
+- Metabase for visualization
+- The open-source community for their contributions

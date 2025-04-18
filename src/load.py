@@ -22,7 +22,7 @@ def chunk_iterator(iterator, chunk_size):
         
 
 def load_to_postgres_in_chunks(spark_df, table_name, engine, chunk_size=100000):
-    """Write data from a Spark DataFrame to PostgreSQL in chunks."""
+    """Load large datasets to PostgreSQL in chunks to avoid memory issues."""
     total_rows = 0
     try:
         iterator = spark_df.toLocalIterator()
@@ -38,7 +38,7 @@ def load_to_postgres_in_chunks(spark_df, table_name, engine, chunk_size=100000):
 
 
 def load_to_postgres(df_spark, table_name, engine):
-    """Load smaller datasets directly to PostgreSQL."""
+    """Load small datasets directly to PostgreSQL."""
     try:
         df_pandas = df_spark.toPandas()
         df_pandas.to_sql(table_name, engine, if_exists="replace", index=False)
@@ -48,6 +48,7 @@ def load_to_postgres(df_spark, table_name, engine):
 
 
 def main():
+    """Load data from parquet files into PostgreSQL."""
     # Initialize Spark session
     spark = create_spark_session()
     
@@ -58,18 +59,18 @@ def main():
     for table in TABLES:
         print(f"Processing {table} data...")
         
-        # Extract: Read CSV and create DataFrame
+        # Read parquet file
         parquet_path = f"data/datalake/{table}/*.parquet"
         df = create_dataframe(spark, parquet_path)
  
-        # Load: Write to PostgreSQL
+        # Load to PostgreSQL using appropriate method based on size
         print(f"Loading {table} data into PostgreSQL...")
         if df.count() > 100000:
             load_to_postgres_in_chunks(df, table, engine)
         else:
             load_to_postgres(df, table, engine)
 
-        # Close spark session
+        # Clean up
         spark.stop()
 
 
