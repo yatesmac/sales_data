@@ -2,6 +2,8 @@
 
 A modern data pipeline for processing and analyzing sales data, built with Apache Airflow, PySpark, and PostgreSQL.
 
+![Dataset Cover](/img/dataset_cover.webp)
+
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
 [![Apache Airflow](https://img.shields.io/badge/Airflow-2.7%2B-orange)](https://airflow.apache.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13%2B-blue)](https://www.postgresql.org/)
@@ -62,6 +64,18 @@ Modern businesses face significant challenges in managing and analyzing their sa
      - Automated scheduling and monitoring
      - Error handling and retry mechanisms
      - Dependency management
+
+## About Dataset
+
+### Overview
+
+The Grocery Sales Database is a structured relational dataset designed for analyzing sales transactions, customer demographics, product details, employee records, and geographical information across multiple cities and countries.
+
+The dataset can be accessed on [Kaggle](https://www.kaggle.com/datasets/andrexibiza/grocery-sales-dataset/data).
+
+### Schema
+
+![Schema](/img/schema.png)
 
 ## 🛠 Technology Stack
 
