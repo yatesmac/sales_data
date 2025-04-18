@@ -90,12 +90,14 @@ Modern businesses face significant challenges in managing and analyzing their sa
 ### Option 1: Setup with Airflow (Full Pipeline)
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/sales-data-elt.git
    cd sales-data-elt
    ```
 
 2. **Set up the environment**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -103,11 +105,13 @@ Modern businesses face significant challenges in managing and analyzing their sa
    ```
 
 3. **Start the services**
+
    ```bash
    docker-compose up -d
    ```
 
 4. **Initialize Airflow**
+
    ```bash
    airflow db init
    airflow users create \
@@ -120,6 +124,7 @@ Modern businesses face significant challenges in managing and analyzing their sa
    ```
 
 5. **Start Airflow services**
+
    ```bash
    airflow webserver -p 8080
    airflow scheduler
@@ -130,6 +135,7 @@ Modern businesses face significant challenges in managing and analyzing their sa
 If you prefer to run the pipeline without Airflow, you can use the standalone Python scripts:
 
 1. **Clone and setup environment**
+
    ```bash
    git clone https://github.com/yourusername/sales-data-elt.git
    cd sales-data-elt
@@ -139,11 +145,13 @@ If you prefer to run the pipeline without Airflow, you can use the standalone Py
    ```
 
 2. **Start PostgreSQL (if needed)**
+
    ```bash
    docker-compose up -d postgres
    ```
 
 3. **Run the pipeline manually**
+
    ```bash
    # Create necessary directories
    python src/create_data_dir.py
@@ -156,6 +164,7 @@ If you prefer to run the pipeline without Airflow, you can use the standalone Py
    ```
 
 4. **Run transformations (optional)**
+
    ```bash
    # Using dbt
    cd dbt
@@ -164,31 +173,62 @@ If you prefer to run the pipeline without Airflow, you can use the standalone Py
 
 ## 📁 Project Structure
 
-```
-sales-data-elt/
-├── src/                     # Source code
-│   ├── extract.py          # Data extraction module
-│   ├── load.py            # Data loading module
-│   ├── resources.py       # Resource configuration
-│   ├── create_data_dir.py # Directory setup
-│   └── schema.sql         # Database schema
-├── dags/                   # Airflow DAG definitions
-├── dbt/                    # dbt transformations
-├── notebooks/              # Jupyter notebooks
-│   └── exploration.ipynb  # Data exploration
-├── docker-compose.yml      # Docker services config
-└── requirements.txt        # Python dependencies
+```mermaid
+├── README.md
+├── dags
+│   └── pipeline.py
+├── data
+│   ├── datalake
+│   ├── metabase_data
+│   ├── postgres
+│   │   ├── vol-pgadmin_data
+│   │   └── vol-pgdata
+│   └── raw
+│       ├── categories.csv
+│       ├── cities.csv
+│       ├── countries.csv
+│       ├── customers.csv
+│       ├── employees.csv
+│       ├── products.csv
+│       └── sales.csv
+├── dbt
+│   ├── dbt_project.yml
+│   ├── models
+│   │   ├── sales_total_data_schema.yml
+│   │   ├── sales_total_price.sql
+│   │   ├── src_products.sql
+│   │   ├── src_sales.sql
+│   │   ├── src_sales_data.yml
+│   │   └── src_sales_data_schema.yml
+│   ├── packages.yml 
+│   └── profiles.yml
+├── docker-compose.yml
+├── notebooks
+│   ├── exploration.ipynb
+│   ├── extract.ipynb
+│   ├── load.ipynb
+│   ├── pipeline.ipynb
+│   └── visualization.ipynb
+├── requirements.txt
+└── src
+    ├── create_data_dir.py
+    ├── extract.py
+    ├── load.py
+    ├── resources.py
+    └── schema.sql
 ```
 
 ## 🔄 Data Flow
 
 ### 1. Data Extraction (`src/extract.py`)
+
 - Reads raw CSV files from `data/raw/` directory
 - Uses PySpark for efficient data processing
 - Converts and saves data in Parquet format
 - Stores processed files in `data/datalake/{table_name}/`
 
 ### 2. Data Loading (`src/load.py`)
+
 - Reads Parquet files from the datalake
 - Implements smart loading strategy:
   - Direct loading for small datasets
@@ -197,19 +237,23 @@ sales-data-elt/
 - Handles error logging and data validation
 
 ### 3. Data Transformation (dbt)
+
 - Applies business logic using dbt models
 - Performs data quality checks
 - Creates transformed views and tables
 - Maintains data lineage
 
 ### 4. Data Analysis (Jupyter)
+
 - Interactive data exploration in `notebooks/exploration.ipynb`
 - Generates insights and visualizations
 - Supports ad-hoc analysis
 - Connects to both raw and transformed data
 
 ### Data Quality Checks
+
 Throughout the pipeline, several data quality checks are performed:
+
 - Schema validation during extraction
 - Data integrity checks during loading
 - Business rule validation in dbt transformations
